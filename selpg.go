@@ -185,7 +185,7 @@ func processInput(sa selpgArgs) {
 				line = 1
 			}
 			// 到达指定页码，开始打印
-			if (pageCtr >= sa.startPage) && (pageCtr <= sa.endPage) {
+			if (page >= sa.startPage) && (page <= sa.endPage) {
 				_, err := fout.Write([]byte(line))
 				if err != nil {
 					fmt.Println(err)
@@ -203,7 +203,7 @@ func processInput(sa selpgArgs) {
 				break // 读完一行
 			}
 			// 到达指定页码，开始打印
-			if (pageCtr >= sa.startPage) && (pageCtr <= sa.endPage) {
+			if (page >= sa.startPage) && (page <= sa.endPage) {
 				_, err := fout.Write([]byte(page))
 				if err != nil {
 					os.Exit(5)
@@ -216,12 +216,12 @@ func processInput(sa selpgArgs) {
 
 	//if err := cmd.Wait(); err != nil {
 	//handle err
-	if page_ctr < sa.start_page {
+	if page < sa.startPage {
 		fmt.Fprintf(os.Stderr,
 			"\n%s: start_page (%d) greater than total pages (%d),"+
-				" no output written\n", progname, sa.start_page, page_ctr)
-	} else if page_ctr < sa.end_page {
+				" no output written\n", progname, sa.startPage, page)
+	} else if page < sa.endPage {
 		fmt.Fprintf(os.Stderr, "\n%s: end_page (%d) greater than total pages (%d),"+
-			" less output than expected\n", progname, sa.end_page, page_ctr)
+			" less output than expected\n", progname, sa.endPage, page)
 	}
 }
