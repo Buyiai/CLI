@@ -226,7 +226,7 @@ func main() {
 		line := 0
 		page := 1
 		for {
-			line, crc := bufFin.ReadString('\n')
+			lines, crc := bufFin.ReadString('\n')
 			if crc != nil {
 				break 	// 读完一行
 			}
@@ -237,7 +237,7 @@ func main() {
 			}
 			// 到达指定页码，开始打印
 			if (page >= sa.startPage) && (page <= sa.endPage) {
-				_, err := fout.Write([]byte(line))
+				_, err := fout.Write([]byte(lines))
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(9)
@@ -250,13 +250,13 @@ func main() {
 ```go
 		page = 1
 		for {
-			page, err := bufFin.ReadString('\n')
+			pages, err := bufFin.ReadString('\n')
 			if err != nil {
 				break // 读完一行
 			}
 			// 到达指定页码，开始打印
 			if (page >= sa.startPage) && (page <= sa.endPage) {
-				_, err := fout.Write([]byte(page))
+				_, err := fout.Write([]byte(pages))
 				if err != nil {
 					os.Exit(5)
 				}
