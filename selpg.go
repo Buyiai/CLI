@@ -148,7 +148,7 @@ func processInput(sa selpgArgs) {
 		// 用只写的方式打开 print_dest 文件，如果文件不存在，就创建该文件。
 		var outputErr error
 		cmd.Stdout, outputErr = os.OpenFile(sa.printDest, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-		if err != nil {
+		if outputErr != nil {
 			fmt.Fprintf(os.Stderr, "\n%s: could not open file %s\n",
 				progname, sa.printDest)
 			os.Exit(8)
@@ -169,24 +169,24 @@ func processInput(sa selpgArgs) {
 	// 打印，根据page_type（按固定行数或分页符进行打印）
 
 	var page int // 当前页数
-	var line int // 当前行数
+	// var line int // 当前行数
 
 	if sa.pageType == "l" { // 按固定行数打印
 		line := 0
-		page := 1
+		page = 1
 		for {
-			line, crc := bufFin.ReadString('\n')
+			lines, crc := bufFin.ReadString('\n')
 			if crc != nil {
 				break // 读完一行
 			}
-			line++                 // 行数加一
+			line++                // 行数加一
 			if line > sa.pageLen { //读完一页
 				page++ // 页数加一
 				line = 1
 			}
 			// 到达指定页码，开始打印
 			if (page >= sa.startPage) && (page <= sa.endPage) {
-				_, err := fout.Write([]byte(line))
+				_, err := fout.Write([]byte(lines))
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(9)
@@ -196,7 +196,7 @@ func processInput(sa selpgArgs) {
 	} else { // 按分页符打印
 		page = 1
 		for {
-			page, err := bufFin.ReadString('\n')
+			pages, err := bufFin.ReadString('\n')
 			// 使用\n代替换页符，而且便于测试
 			// line, crc := bufFin.ReadString('\f')
 			if err != nil {
@@ -204,7 +204,7 @@ func processInput(sa selpgArgs) {
 			}
 			// 到达指定页码，开始打印
 			if (page >= sa.startPage) && (page <= sa.endPage) {
-				_, err := fout.Write([]byte(page))
+				_, err := fout.Write([]byte(pages))
 				if err != nil {
 					os.Exit(5)
 				}
